@@ -6,7 +6,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
-from helpers import apology, login_required, lookup, usd
+from helpers import login_required, usd
 
 # Configure application
 app = Flask(__name__)
@@ -20,15 +20,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Connect SQLite database
-db = SQL("buybot.db")
-sql = """
-    CREATE TABLE users (
-    id INTEGER,
-    username TEXT,
-    hash TEXT
-    primary key(id)
-    )"""
-db.execute(sql)
+db = SQL("sqlite:///buybot.db")
 
 @app.after_request
 def after_request(response):
