@@ -43,21 +43,14 @@ def buy():
 def index():
     userid = session["user_id"]
     try:
-        rows_transactions = db.execute(
-            "SELECT * \
+        totalval = db.execute(
+            "SELECT SUM(column_name)\
             FROM transactions\
-            WHERE user_id = ? \
-            ORDER BY datetime DESC",
+            WHERE user_id=?",
             userid
         )
     except:
         return redirect("/buy")
-    totalval = db.execute(
-        "SELECT SUM(column_name)\
-        FROM transactions\
-        WHERE user_id=?",
-        userid
-    )
     # Account total value
     return render_template(
         "index.html",
@@ -162,37 +155,30 @@ def register():
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
+    user_id = session["user_id"]
     if request.method == "POST":
-        userid = session["user_id"]
-        db.execute(
-            "CREATE TABLE IF NOT EXISTS profiles \
-                (id INTEGER PRIMARY KEY,\
-                user_id INTEGER,\
-                firstName TEXT,\
-                lastName TEXT,\
-                email TEXT,\
-                address TEXT,\
-                address2 TEXT,\
-                country TEXT,\
-                state TEXT\
-                zip TEXT\
-                sameAddress TEXT\
-                ccName TEXT\
-                ccNumber TEXT\
-                ccExpiration TEXT\
-                FOREIGN KEY (user_id) REFERENCES users(id))"
-        )
-        profile = {}
-        for key, val in request.form.items():
-            profile[key] = val
-        for key in profile.values():
-            db.execute("UPDATE profiles SET ?=? WHERE user_id = ?", key, profile[key], userid)
-        return render_template("profile.html", profile=profile)
-    try:
-        profile = db.execute("SELECT * FROM profiles")
-        return render_template("profile.html", profile=profile)
-    except:
-        return render_template("updateprofile.html")
+        profile = dict(request.form.items())
+        #return render_template("test.html", profile=profile)
+        try:
+            if profile["sameAddress"]=="on":
+                profile["addressB"] = profile["address"]
+                profile["address2B"] = profile["address2"]
+                profile["stateB"] = profile["state"]
+                profile["zipB"] = profile["zip"]
+                profile["countryB"] = profile["country"]
+        except:
+            profile["sameAddress"]='off'
+        for key in profile:
+            db.execute("UPDATE users SET ?=? WHERE id = ?", key, profile[key], user_id)
+        profile_recent = db.execute("SELECT * FROM users WHERE id=?", user_id)
+        profile_recent=profile_recent[0]
+        #return render_template("test.html")
+        return render_template("profile.html", profile_recent=profile_recent)
+    profile_recent = db.execute("SELECT * FROM users WHERE id=?", user_id)
+    profile_recent=profile_recent[0]
+    #profile_test=profile_recent
+    #return render_template("test.html", profile_test=profile_test)
+    return render_template("profile.html", profile_recent=profile_recent)
 
 
 @app.route("/changepass", methods=["GET", "POST"])
