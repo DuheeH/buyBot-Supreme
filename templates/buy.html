@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Buy
+{% endblock %}
+
+{% block main %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var formfield = document.getElementById('formfield');
+
+        function add(){
+            var newField = document.createElement('input');
+            newField.setAttribute('autocomplete','off');
+            newField.setAttribute('autofocus','');
+            newField.setAttribute('class','form-control mx-auto w-auto')
+            newField.setAttribute('name','url');
+            newField.setAttribute('placeholder','URL');
+            newField.setAttribute('type','text');
+            formfield.appendChild(newField);
+            var newField = document.createElement('input');
+            newField.setAttribute('autocomplete','off');
+            newField.setAttribute('class','form-control mx-auto w-auto')
+            newField.setAttribute('name','quantity');
+            newField.setAttribute('placeholder','Quantity');
+            newField.setAttribute('type','number');
+            formfield.appendChild(newField);
+        }
+
+        function remove(){
+            var input_tags = formfield.getElementsByTagName('input');
+            if(input_tags.length > 2) {
+                formfield.removeChild(input_tags[(input_tags.length) - 1]);
+            }
+        }
+    });
+</script>
+
+<form action="" method="POST">
+    <div id="formfield">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="url" placeholder="URL" type="text">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="quantity" placeholder="Quantity" type="number">
+    </div>
+    <button class="btn btn-primary" type="submit">Buy</button>
+</form>
+
+<div class="controls">
+    <button class="add" onclick="add()"><i class="addURL"></i>Add</button>
+    <button class="remove" onclick="remove()"><i class="minusURL"></i>Remove</button>
+</div>
+<script src="script.js"></script>
+{% endblock %}

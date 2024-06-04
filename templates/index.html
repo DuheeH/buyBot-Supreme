@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+
+<p>Total Spent: {{ totalval | usd }} </p>
+<br>
+
+<h2>Transaction History</h2>
+<br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Url</th>
+            <th scope="col">Purchase Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Net Price</th>
+            <th scope="col">Date-Time</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for row in rows_history %}
+            <tr>
+                <!-- turn this into a hyperlink -->
+                <td>{{ row["url"].upper() }}</td>
+                <!-- -->
+                <td>{{ row["price"] | usd }}</td>
+                <td>{{ row["quantity"] }}</td>
+                <td>{{ row["totalval"] | usd }}</td>
+                <td>{{ row["datetime"] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
