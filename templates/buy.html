@@ -5,34 +5,64 @@
 {% endblock %}
 
 {% block main %}
+<style>
+    #formfield {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .input-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 5px; /* Reduce the bottom margin */
+    }
+
+    .input-container input {
+        margin-right: 5px; /* Adjust the right margin */
+    }
+
+    .input-container input:last-child {
+        margin-right: 0px; /* Remove the right margin for the last input field */
+    }
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var formfield = document.getElementById('formfield');
+        //var inputCount = 1; // Initialize the input count
 
         function addInput() {
+            var inputContainer = document.createElement('div');
+            inputContainer.className = 'input-container';
+
             var newUrl = document.createElement('input');
             newUrl.setAttribute('autocomplete','off');
             newUrl.setAttribute('autofocus','');
-            newUrl.setAttribute('class','form-control mx-auto w-auto')
-            newUrl.setAttribute('name','url');
+            newUrl.setAttribute('class','form-control mx-auto w-auto');
+            newUrl.setAttribute('name','url');// + inputCount); // Adjust the name dynamically
             newUrl.setAttribute('placeholder','URL');
             newUrl.setAttribute('type','text');
-            formfield.appendChild(newUrl);
 
             var newQuantity = document.createElement('input');
             newQuantity.setAttribute('autocomplete','off');
-            newQuantity.setAttribute('class','form-control mx-auto w-auto')
-            newQuantity.setAttribute('name','quantity');
+            newQuantity.setAttribute('class','form-control mx-auto w-auto');
+            newQuantity.setAttribute('name','quantity');// + inputCount); // Adjust the name dynamically
             newQuantity.setAttribute('placeholder','Quantity');
             newQuantity.setAttribute('type','number');
-            formfield.appendChild(newQuantity);
+
+            inputContainer.appendChild(newUrl);
+            inputContainer.appendChild(newQuantity);
+            formfield.appendChild(inputContainer);
+
+            //inputCount++; // Increment the input count
         }
 
         function removeInput() {
-            var input_tags = formfield.getElementsByTagName('input');
-            if(input_tags.length > 2) {
-                formfield.removeChild(input_tags[(input_tags.length) - 2]);
-                formfield.removeChild(input_tags[(input_tags.length) - 1]);
+            var inputContainers = formfield.querySelectorAll('.input-container');
+            if(inputContainers.length > 1) {
+                formfield.removeChild(inputContainers[inputContainers.length - 1]);
+                inputCount--; // Decrement the input count
             }
         }
 
@@ -48,8 +78,10 @@
 
 <form action="" method="POST">
     <div id="formfield">
-        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="url" placeholder="URL" type="text">
-        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="quantity" placeholder="Quantity" type="number">
+        <div class="input-container">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="url" placeholder="URL" type="text">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="quantity" placeholder="Quantity" type="number">
+        </div>
     </div>
     <br>
     <button class="btn btn-primary" type="submit">Buy</button>

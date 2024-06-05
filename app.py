@@ -6,7 +6,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
-from helpers import login_required, usd
+from helpers import login_required, usd, getProfile
 
 # Configure application
 app = Flask(__name__)
@@ -34,7 +34,9 @@ def after_request(response):
 @login_required
 def buy():
     if request.method == "POST":
-        
+        urls = request.form.getlist('url')
+        quantities = request.form.getlist('quantity')
+        return render_template("test.html", urls=urls,quantities=quantities)
         return redirect("/")
     return render_template("buy.html")
 
@@ -171,12 +173,10 @@ def profile():
             profile["sameAddress"]='off'
         for key in profile:
             db.execute("UPDATE users SET ?=? WHERE id = ?", key, profile[key], user_id)
-        profile_recent = db.execute("SELECT * FROM users WHERE id=?", user_id)
-        profile_recent=profile_recent[0]
+        profile_recent = getProfile()
         #return render_template("test.html")
         return render_template("profile.html", profile_recent=profile_recent)
-    profile_recent = db.execute("SELECT * FROM users WHERE id=?", user_id)
-    profile_recent=profile_recent[0]
+    profile_recent = getProfile()
     #profile_test=profile_recent
     #return render_template("test.html", profile_test=profile_test)
     return render_template("profile.html", profile_recent=profile_recent)
