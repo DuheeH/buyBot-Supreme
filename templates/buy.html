@@ -9,30 +9,40 @@
     document.addEventListener('DOMContentLoaded', function() {
         var formfield = document.getElementById('formfield');
 
-        function add(){
-            var newField = document.createElement('input');
-            newField.setAttribute('autocomplete','off');
-            newField.setAttribute('autofocus','');
-            newField.setAttribute('class','form-control mx-auto w-auto')
-            newField.setAttribute('name','url');
-            newField.setAttribute('placeholder','URL');
-            newField.setAttribute('type','text');
-            formfield.appendChild(newField);
-            var newField = document.createElement('input');
-            newField.setAttribute('autocomplete','off');
-            newField.setAttribute('class','form-control mx-auto w-auto')
-            newField.setAttribute('name','quantity');
-            newField.setAttribute('placeholder','Quantity');
-            newField.setAttribute('type','number');
-            formfield.appendChild(newField);
+        function addInput() {
+            var newUrl = document.createElement('input');
+            newUrl.setAttribute('autocomplete','off');
+            newUrl.setAttribute('autofocus','');
+            newUrl.setAttribute('class','form-control mx-auto w-auto')
+            newUrl.setAttribute('name','url');
+            newUrl.setAttribute('placeholder','URL');
+            newUrl.setAttribute('type','text');
+            formfield.appendChild(newUrl);
+
+            var newQuantity = document.createElement('input');
+            newQuantity.setAttribute('autocomplete','off');
+            newQuantity.setAttribute('class','form-control mx-auto w-auto')
+            newQuantity.setAttribute('name','quantity');
+            newQuantity.setAttribute('placeholder','Quantity');
+            newQuantity.setAttribute('type','number');
+            formfield.appendChild(newQuantity);
         }
 
-        function remove(){
+        function removeInput() {
             var input_tags = formfield.getElementsByTagName('input');
             if(input_tags.length > 2) {
+                formfield.removeChild(input_tags[(input_tags.length) - 2]);
                 formfield.removeChild(input_tags[(input_tags.length) - 1]);
             }
         }
+
+        document.querySelector("#add").addEventListener('click', function(event) {
+            addInput();
+        });
+
+        document.querySelector("#remove").addEventListener('click', function(event) {
+            removeInput();
+        });
     });
 </script>
 
@@ -41,12 +51,12 @@
         <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="url" placeholder="URL" type="text">
         <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="quantity" placeholder="Quantity" type="number">
     </div>
+    <br>
     <button class="btn btn-primary" type="submit">Buy</button>
 </form>
-
+<br>
 <div class="controls">
-    <button class="add" onclick="add()"><i class="addURL"></i>Add</button>
-    <button class="remove" onclick="remove()"><i class="minusURL"></i>Remove</button>
+    <button class="btn btn-primary" id="add" type="">Add</button>
+    <button class="btn btn-primary" id="remove" type="">Remove</button>
 </div>
-<script src="script.js"></script>
 {% endblock %}

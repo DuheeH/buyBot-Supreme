@@ -34,6 +34,7 @@ def after_request(response):
 @login_required
 def buy():
     if request.method == "POST":
+        
         return redirect("/")
     return render_template("buy.html")
 
