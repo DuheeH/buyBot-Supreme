@@ -11,16 +11,7 @@
         <input type="text" id="firstName" name="firstName" placeholder="First Name" required value="{% if profile_recent['firstName'] != None %}{{ profile_recent['firstName'] }}{% endif %}" autocomplete="off">
         <input type="text" id="lastName" name="lastName" placeholder="Last Name" required value="{% if profile_recent['lastName'] != None %}{{ profile_recent['lastName'] }}{% endif %}" autocomplete="off"><br>
         <input type="text" id="email" name="email" placeholder="Email" required value="{% if profile_recent['email'] != None %}{{ profile_recent['email'] }}{% endif %}" autocomplete="off">
-        <input type="text" id="phone" name="phone" placeholder="Phone: 1 (123) 456-7890" required value="{% if profile_recent['phone'] != None %}{{ profile_recent['phone'] }}{% endif %}" autocomplete="off"><br><br>
-      </div>
-      
-      <div class="mb-3">
-          <label><h3>Shipping</h3></label><br>
-          <input type="text" id="address" name="address" placeholder="Address" required value="{% if profile_recent['address'] != None %}{{ profile_recent['address'] }}{% endif %}" autocomplete="off">
-          <input type="text" id="address2" name="address2" placeholder="Address2 (Optional)" value="{% if profile_recent['address2'] != None %}{{ profile_recent['address2'] }}{% endif %}" autocomplete="off"><br>
-          <input type="text" id="city" name="city" placeholder="City (all lowercase)" required value="{% if profile_recent['city'] != None %}{{ profile_recent['city'] }}{% endif %}" autocomplete="off">
-          <input type="text" id="state" name="state" placeholder="State (all lowercase)" required value="{% if profile_recent['state'] != None %}{{ profile_recent['state'] }}{% endif %}" autocomplete="off">
-          <input type="text" id="zip" name="zip" placeholder="Zip Code" required value="{% if profile_recent['zip'] != None %}{{ profile_recent['zip'] }}{% endif %}" autocomplete="off"><br>
+        <input type="text" id="phone" name="phone" placeholder="Phone: 1 1234567890" required value="{% if profile_recent['phone'] != None %}{{ profile_recent['phone'] }}{% endif %}" autocomplete="off"><br><br>
       </div>
       <div class="mb-3">
           <label><h3>Credit Card Information</h3></label><br>
@@ -31,7 +22,6 @@
           <input type="text" id="ccSecurity" name="ccSecurity" placeholder="Security Code" required value="{% if profile_recent['ccSecurity'] != None %}{{ profile_recent['ccSecurity'] }}{% endif %}" autocomplete="off">
           <br><br>
       </div>
-
       <button class="btn btn-primary" type="submit">Save</button>
     </form>
 {% endblock %}
