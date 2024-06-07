@@ -8,6 +8,8 @@ import uuid
 from cs50 import SQL
 from flask import redirect, render_template, request, session
 from functools import wraps
+import random
+import time
 
 # Connect SQLite database
 db = SQL("sqlite:///buybot.db")
@@ -34,6 +36,13 @@ def usd(value):
 def getProfile():
     """Retrieves up-to-date profile info"""
     user_id = session["user_id"]
-    profile_recent = db.execute("SELECT * FROM users WHERE id=?", user_id)
-    profile_recent=profile_recent[0]
+    profile_recent = db.execute("SELECT * FROM profiles WHERE id=?", user_id)
+    try:
+        profile_recent=profile_recent[0]
+    except:
+        pass
     return profile_recent
+
+def randomWait():
+    randon_wait = random.randrange(1,5)
+    time.sleep(randon_wait)
