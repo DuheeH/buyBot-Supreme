@@ -1,5 +1,5 @@
-# buybot-gen
-Buy-bot web application for Rare Supreme Merchandise
-Enter checkout details
-Enter the url(s) for the item to be purchased from Supreme
-Purchase
+# buybot-Supreme
+Buy-bot Web Application for Supreme Merchandise<br>
+1) Enter checkout details<br>
+2) Enter the url(s) for the item to be purchased from Supreme<br>
+3) Purchase<br>
