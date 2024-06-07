@@ -33,15 +33,13 @@ def usd(value):
     """Format value as USD."""
     return f"${value:,.2f}"
 
-def getProfile():
+def getTable(table):
     """Retrieves up-to-date profile info"""
     user_id = session["user_id"]
-    profile_recent = db.execute("SELECT * FROM profiles WHERE id=?", user_id)
-    try:
-        profile_recent=profile_recent[0]
-    except:
-        pass
-    return profile_recent
+    table_recent = db.execute("SELECT * FROM ? WHERE user_id=? ORDER BY datetime DESC", table, user_id)
+    if len(table_recent) <= 1:
+        return table_recent[0]
+    return table_recent
 
 def randomWait():
     randon_wait = random.randrange(1,5)

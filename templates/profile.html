@@ -11,7 +11,7 @@
         <input type="text" id="firstName" name="firstName" placeholder="First Name" required value="{% if profile_recent['firstName'] != None %}{{ profile_recent['firstName'] }}{% endif %}" autocomplete="off">
         <input type="text" id="lastName" name="lastName" placeholder="Last Name" required value="{% if profile_recent['lastName'] != None %}{{ profile_recent['lastName'] }}{% endif %}" autocomplete="off"><br>
         <input type="text" id="email" name="email" placeholder="Email" required value="{% if profile_recent['email'] != None %}{{ profile_recent['email'] }}{% endif %}" autocomplete="off">
-        <input type="text" id="phone" name="phone" placeholder="Phone ex. 1 (123) 456-7890" required value="{% if profile_recent['phone'] != None %}{{ profile_recent['phone'] }}{% endif %}" autocomplete="off"><br><br>
+        <input type="text" id="phone" name="phone" placeholder="Phone: 1 (123) 456-7890" required value="{% if profile_recent['phone'] != None %}{{ profile_recent['phone'] }}{% endif %}" autocomplete="off"><br><br>
       </div>
       
       <div class="mb-3">
@@ -26,7 +26,8 @@
           <label><h3>Credit Card Information</h3></label><br>
           <input type="text" id="ccName" name="ccName" placeholder="Name" required value="{% if profile_recent['ccName'] != None %}{{ profile_recent['ccName'] }}{% endif %}" autocomplete="off">
           <input type="text" id="ccNumber" name="ccNumber" placeholder="Number" required value="{% if profile_recent['ccNumber'] != None %}{{ profile_recent['ccNumber'] }}{% endif %}" autocomplete="off"><br>
-          <input type="text" id="ccExpiration" name="ccExpiration" placeholder="Expiration: MM/YY" required value="{% if profile_recent['ccExpiration'] != None %}{{ profile_recent['ccExpiration'] }}{% endif %}" autocomplete="off">
+          <input type="text" id="ccExpirationM" name="ccExpirationM" placeholder="Expiration Month: MM" required value="{% if profile_recent['ccExpiration'] != None %}{{ profile_recent['ccExpiration'][0:2] }}{% endif %}" autocomplete="off">
+          <input type="text" id="ccExpirationY" name="ccExpirationY" placeholder="Expiration Year: YY" required value="{% if profile_recent['ccExpiration'] != None %}{{ profile_recent['ccExpiration'][-2:] }}{% endif %}" autocomplete="off">
           <input type="text" id="ccSecurity" name="ccSecurity" placeholder="Security Code" required value="{% if profile_recent['ccSecurity'] != None %}{{ profile_recent['ccSecurity'] }}{% endif %}" autocomplete="off">
           <br><br>
       </div>

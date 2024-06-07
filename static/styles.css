@@ -21,3 +21,31 @@ nav .navbar-brand .green
 {
     color: #2e944b;
 }
+
+#formfield {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px; /* Reduce the bottom margin */
+}
+
+.input-container input {
+    margin-right: 5px; /* Adjust the right margin */
+}
+
+.input-container input:last-child {
+    margin-right: 0px; /* Remove the right margin for the last input field */
+}
+
+.label {
+    display: inline-block;
+    width: 100px; /* Adjust the width as needed */
+    text-align: right;
+    margin-right: 10px; /* Add some spacing between the label and input */
+    margin-top: 5px;
+}
