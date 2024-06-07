@@ -3,16 +3,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
 import chromedriver_binary
 import time
+
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
-from helpers import login_required, usd, getProfile, randomWait
+from helpers import login_required, usd, getTable, randomWait
 
 # Configure application
 app = Flask(__name__)
@@ -49,7 +49,6 @@ def buy():
             CREATE TABLE IF NOT EXISTS transactions
             (id INTEGER PRIMARY KEY,
             url TEXT,
-            quantity INTEGER,
             price FLOAT,
             datetime DATETIME,
             user_id INTEGER,
@@ -57,58 +56,68 @@ def buy():
         """)
 
         wd = webdriver.Chrome()
-        profile = getProfile()
-        profile_columns = ['firstName', 'lastName', 'email', 'address', 'address2', 'city', 'state', 'zip', 'phone', 'ccName', 'ccNumber', 'ccExpiration', 'ccSecurity']
+        profile = getTable('profiles')
+        profile_columns = ['firstName', 'lastName', 'email', 'address', 'address2', 'city', 'state', 'zip', 'phone']
+        card_columns = ['ccName', 'ccNumber', 'ccExpiration', 'ccSecurity']
         xpath_dict = {
             'addCart' : '//*[@id="product-root"]/div/div[2]/div[2]/form/div[2]/div/div[4]/div[2]/div[2]/div[3]/div[1]/input',
             'price' : '//*[@id="product-root"]/div/div[2]/div[2]/form/div[2]/div/div[4]/div[1]/div[2]',
             'checkout' : '//*[@id="product-root"]/div/div[1]/div/div/div/a[2]',
-            'processPayment': '//*[@id="checkout-pay-button"]',
-            'firstName': '//*[@id="TextField0"]',
-            'lastName': '//*[@id="TextField1"]',
-            'email': '//*[@id="email"]',
-            'address': '//*[@id="shipping-address1"]',
-            'address2': '//*[@id="TextField2"]',
-            'city': '//*[@id="TextField3"]',
-            'state': '//*[@id="Select1"]',
-            'zip': '//*[@id="TextField4"]',
-            'phone': '//*[@id="TextField5"]',
-            'ccName': '//*[@id="name"]',
-            'ccNumber': '//*[@id="number"]',
-            'ccExpiration': '//*[@id="expiry"]',
-            'ccSecurity': '//*[@id="verification_value"]'
+        }
+        id_dict = {
+            'processPayment': 'checkout-pay-button',
+            'firstName': 'TextField0',
+            'lastName': 'TextField1',
+            'email': 'email',
+            'address': 'shipping-address1',
+            'address2': 'TextField2',
+            'city': 'TextField3',
+            'state': 'Select1',
+            'zip': 'TextField4',
+            'phone': 'TextField5',
+            'ccName': 'name',
+            'ccNumber': 'number',
+            'ccExpiration': 'expiry',
+            'ccSecurity': 'verification_value'
         }
         prices = []
         for index, url in enumerate(urls):
-            wait = WebDriverWait(wd, 10)
             wd.get(url)
-            # Add items to cart X times 
-            for _ in range(int(quantities[index])):
-                wd.find_element(By.XPATH, xpath_dict['addCart']).click()
+            # Add items to cart
+            # addCart = WebDriverWait(wd, 3).until(EC.presence_of_element_located((By.XPATH, xpath_dict["addCart"])))
+            # addCart.click()
+            wd.find_element(By.XPATH, xpath_dict['addCart']).click()
             # Add price to prices list
-            prices.append(wd.find_element(By.XPATH, xpath_dict['price']).text)
-            randomWait()
-            # Go to checkout
-            wd.find_element(By.XPATH, xpath_dict['checkout']).click()
-            randomWait()
-            # Fill in checkout info
-            for column in profile_columns:
-                value = str(profile[column])
-                xpath = xpath_dict[column]
-                element = WebDriverWait(wd, 3).until(EC.presence_of_element_located((By.XPATH, xpath)))
-                element.send_keys(value)
-            # Process Payment
-            input("enter to continue")
-            return render_template('test.html')
-            wd.find_element(By.XPATH, xpath_dict['processPayment']).click()
-            wd.quit
+            price = (wd.find_element(By.XPATH, xpath_dict['price']).text)
+            prices.append(price)
+        time.sleep(1.5)
+        # Go to checkout
+        wd.find_element(By.XPATH, xpath_dict['checkout']).click()
+        # cart_button = WebDriverWait(wd, 3).until(EC.presence_of_element_located((By.XPATH, xpath_dict["checkout"])))
+        # cart_button.click()
+        randomWait()
+        # Fill in checkout info
+        for column in profile_columns:
+            value = str(profile[column])
+            id = id_dict[column]
+            element = wd.find_element(By.ID, id)
+            element.send_keys(value)
+        for column in card_columns:
+            value = str(profile[column])
+            id = id_dict[column]
+            element = wd.find_element(By.ID, id)
+            element.click()
+            element.send_keys(Keys.BACKSPACE * 5 + value)
+        # Process Payment
+        #wd.find_element(By.XPATH, xpath_dict['processPayment']).click()
+        wd.quit
         for index, url in enumerate(urls):
-            quantity = float(quantities[index])
+            # quantity = float(quantities[index])
             db.execute("""
                 INSERT INTO transactions
-                (url, quantity, price, datetime, user_id)
-                VALUES(?,?,?,?,?)
-            """, url, quantity, prices[index], date_time, user_id)
+                (url, price, datetime, user_id)
+                VALUES(?,?,?,?)
+            """, url, prices[index], date_time, user_id)
         flash("Purchase Successful!")
         return redirect("/")
     try:
@@ -125,28 +134,20 @@ def buy():
 @app.route("/")
 @login_required
 def index():
-    user_id = session["user_id"]
-    totalVal = db.execute("""
-            SELECT SUM(price*quantity) AS totalVal
-            FROM transactions
-            WHERE user_id=?
-        """, user_id
-        )
-    if totalVal[0]['totalVal'] is None:
-        flash("| No Transactions | ")
-        return redirect("/buy")
-    # Account total value
-    transaction_rows = db.execute("""
-            SELECT url,price,quantity,(price*quantity),datetime
-            FROM transactions
-            WHERE user_id = ?""",
-            user_id
-        )
-    return render_template(
-        "index.html",
-        totalVal=totalVal,
-        transaction_rows=transaction_rows
-    )
+    try: 
+        transactions = getTable('transactions')
+        try:
+            if transactions['price'] is None:
+                flash("| No Transactions | ")
+                return redirect("/buy")
+        except:
+            return render_template(
+                "index.html",
+                transactions=transactions
+                )
+    except:
+        flash("| No Transactions |")
+        return redirect('/buy')
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -249,6 +250,9 @@ def profile():
     user_id = session["user_id"]
     if request.method == "POST":
         profile = dict(request.form.items())
+        profile['ccExpiration'] = profile['ccExpirationM'] + '               ' + profile['ccExpirationY']
+        del profile["ccExpirationM"]
+        del profile["ccExpirationY"]
         test = db.execute("""SELECT * FROM profiles WHERE user_id=?""",user_id)
         if not test:
             db.execute("""
@@ -261,7 +265,7 @@ def profile():
                 SET ?=?
                 WHERE user_id=?
                 """, key, value, user_id)
-        profile_recent = getProfile()
+        profile_recent = getTable('profiles')
         flash("Profile Updated")
         return render_template("profile.html", profile_recent=profile_recent)
     db.execute("""
@@ -284,7 +288,7 @@ def profile():
         sameAddress TEXT DEFAULT 'on',
         FOREIGN KEY (user_id) REFERENCES users(id)
         )""")
-    profile_recent = getProfile()
+    profile_recent = getTable('profiles')
     return render_template("profile.html", profile_recent=profile_recent)
 
 
