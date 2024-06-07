@@ -40,8 +40,8 @@ def buy():
     if request.method == "POST":
         user_id = session["user_id"]
         urls = request.form.getlist('url')
-        quantities = request.form.getlist('quantity')
         date_time = datetime.now()
+        # Creates table for transactions if not already existing
         db.execute("""
             CREATE TABLE IF NOT EXISTS transactions
             (id INTEGER PRIMARY KEY,
@@ -51,11 +51,13 @@ def buy():
             user_id INTEGER,
             FOREIGN KEY (user_id) REFERENCES users(id))
         """)
-
+        
         wd = webdriver.Chrome()
         profile = getTable('profiles')
         profile_columns = ['firstName', 'lastName', 'email', 'address', 'address2', 'city', 'state', 'zip', 'phone']
         card_columns = ['ccName', 'ccNumber', 'ccExpiration', 'ccSecurity']
+        
+        # The two dicitonaries below can be edited in order for code to work for other websites as well
         xpath_dict = {
             'addCart' : '//*[@id="product-root"]/div/div[2]/div[2]/form/div[2]/div/div[4]/div[2]/div[2]/div[3]/div[1]/input',
             'price' : '//*[@id="product-root"]/div/div[2]/div[2]/form/div[2]/div/div[4]/div[1]/div[2]',
@@ -77,6 +79,8 @@ def buy():
             'ccExpiration': 'expiry',
             'ccSecurity': 'verification_value'
         }
+
+        # The for loop below adds the provided urls to the cart and also webscraps the cost of the item and saves it
         prices = []
         for index, url in enumerate(urls):
             wd.get(url)
@@ -86,10 +90,12 @@ def buy():
             price = (wd.find_element(By.XPATH, xpath_dict['price']).text)
             prices.append(price)
         time.sleep(1.5)
+
         # Go to checkout
         wd.find_element(By.XPATH, xpath_dict['checkout']).click()
         randomWait()
-        # Fill in checkout info
+
+        # Fill in checkout info, two for loops as results were more consistent
         for column in profile_columns:
             value = str(profile[column])
             id = id_dict[column]
@@ -101,9 +107,13 @@ def buy():
             element = wd.find_element(By.ID, id)
             element.click()
             element.send_keys(Keys.BACKSPACE * 5 + value)
-        # Process Payment
+
+        # Process Payment: CONSIDER THIS THE SAFETY SWITCH OF THE WEBAPP
+        # If the line below is not commented out, the payment will be processed
         wd.find_element(By.XPATH, xpath_dict['processPayment']).click()
         wd.quit
+
+        # Enters the data into the transactions table
         for index, url in enumerate(urls):
             db.execute("""
                 INSERT INTO transactions
@@ -111,7 +121,11 @@ def buy():
                 VALUES(?,?,?,?)
             """, url, prices[index], date_time, user_id)
         flash("Purchase Successful!")
+
+        # Redirects to table of transactions
         return redirect("/")
+    
+    # If not submitting form, tests to see whether there is a profile and redirects/renders accordingly
     try:
         rows=db.execute("""
             SELECT * FROM profiles
@@ -126,6 +140,7 @@ def buy():
 @app.route("/")
 @login_required
 def index():
+    # Will either display the table or redirect to buy, as there are no transactions
     try: 
         transactions = getTable('transactions')
         try:
@@ -153,11 +168,13 @@ def login():
     if request.method == "POST":
         # Ensure username was submitted
         if not request.form.get("username"):
-            return apology('Invalid Username/Password', 403)
+            flash("Invalid Username/Password", "error")
+            return redirect("/login")
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return apology('Invalid Username/Password', 403)
+            flash("Invalid Username/Password", "error")
+            return redirect("/login")
 
         # Query database for username
         rows = db.execute(
@@ -168,7 +185,8 @@ def login():
         if len(rows) != 1 or not check_password_hash(
             rows[0]["hash"], request.form.get("password")
         ):
-            return apology('Invalid Username/Password', 403)
+            flash("Invalid Username/Password", "error")
+            return redirect("/login")
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -177,8 +195,7 @@ def login():
         return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template("login.html")
+    return render_template("login.html")
 
 
 @app.route("/logout")
@@ -201,24 +218,24 @@ def register():
         confirmation = request.form.get("confirmation")
 
         if len(username) == 0:
-            flash("Invalid Username")
+            flash("Invalid Username", "error")
             return redirect("/register")
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = ?", username)
 
         # Ensure username does not already exist
         if len(rows) != 0:
-            flash("Invalid Username")
+            flash("Invalid Username", "error")
             return redirect("/register")
 
         # Ensure password exists
         if len(password) == 0:
-            flash("Invalid Password")
+            flash("Invalid Password", "error")
             return redirect("/register")
 
         # Ensure password and confirmation match
         if password != confirmation:
-            flash("Passwords Must Match")
+            flash("Passwords Must Match", "error")
             return redirect("/register")
 
         # Input username and password hash into user table in database
@@ -238,25 +255,36 @@ def register():
 def profile():
     user_id = session["user_id"]
     if request.method == "POST":
+        # Grabs info from the form as a dictionary
         profile = dict(request.form.items())
+
+        # Changing the expiration month/year so that it successfully inputs into the checkout form and database
         profile['ccExpiration'] = profile['ccExpirationM'] + '               ' + profile['ccExpirationY']
         del profile["ccExpirationM"]
         del profile["ccExpirationY"]
-        test = db.execute("""SELECT * FROM profiles WHERE user_id=?""",user_id)
+
+        # Tests to see whether there is a profile already for the user logged in
+        test = getTable('profile')
         if not test:
             db.execute("""
                 INSERT INTO profiles (user_id)
                 VALUES (?)
                 """, user_id)
+        
+        # Adds in the submitted profile info into the database
         for key,value in profile.items():
             db.execute("""
                 UPDATE profiles
                 SET ?=?
                 WHERE user_id=?
                 """, key, value, user_id)
+        
+        # Grabs the most up to date profile info
         profile_recent = getTable('profiles')
         flash("Profile Updated")
         return render_template("profile.html", profile_recent=profile_recent)
+    
+    # Creates a table if it does not exist
     db.execute("""
         CREATE TABLE IF NOT EXISTS profiles (
         id INTEGER PRIMARY KEY,
@@ -277,6 +305,7 @@ def profile():
         sameAddress TEXT DEFAULT 'on',
         FOREIGN KEY (user_id) REFERENCES users(id)
         )""")
+    # Renders the profile info with the info in the table if any exists
     profile_recent = getTable('profiles')
     return render_template("profile.html", profile_recent=profile_recent)
 
@@ -284,6 +313,7 @@ def profile():
 @app.route("/changepass", methods=["GET", "POST"])
 @login_required
 def changepass():
+    # Changes password
     if request.method == "POST":
         userid = session["user_id"]
         password = request.form.get("password")
