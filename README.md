@@ -1,4 +1,4 @@
-# Supreme buyBOT
+# buyBot-Supreme
 #### Video Demo:  <URL HERE>
 #### Description: Supreme Merchandise BuyBOT<br>
 Steps: <br>
