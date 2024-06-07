@@ -6,7 +6,7 @@
 
 {% block main %}
 
-<p>Total Spent: {{ totalval | usd }} </p>
+<p>Total Spent: {{ totalval[0]['SUM(price*quantity)'] | usd }} </p>
 <br>
 
 <h2>Transaction History</h2>
@@ -14,7 +14,7 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">Url</th>
+            <th scope="col">URL</th>
             <th scope="col">Purchase Price</th>
             <th scope="col">Quantity</th>
             <th scope="col">Net Price</th>
@@ -22,14 +22,12 @@
         </tr>
         </thead>
         <tbody>
-            {% for row in rows_history %}
+            {% for row in transaction_rows %}
             <tr>
-                <!-- turn this into a hyperlink -->
-                <td>{{ row["url"].upper() }}</td>
-                <!-- -->
+                <td><a href="{{ row['url'] }}">Item {{ loop.index }}</a></td>
                 <td>{{ row["price"] | usd }}</td>
                 <td>{{ row["quantity"] }}</td>
-                <td>{{ row["totalval"] | usd }}</td>
+                <td>{{ row["(price*quantity)"] | usd }}</td>
                 <td>{{ row["datetime"] }}</td>
             </tr>
             {% endfor %}
