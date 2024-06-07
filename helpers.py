@@ -1,12 +1,5 @@
-import csv
-import datetime
-import pytz
-import requests
-import urllib
-import uuid
-
 from cs50 import SQL
-from flask import redirect, render_template, request, session
+from flask import redirect, render_template, session
 from functools import wraps
 import random
 import time

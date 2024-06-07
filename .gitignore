@@ -1,5 +1,3 @@
 flask_session/
 .DS_Store
 __pycache__/
-templates/test.html
-templates/shippingbilling.html
