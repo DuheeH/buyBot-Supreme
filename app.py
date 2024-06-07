@@ -12,7 +12,7 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
-from helpers import login_required, usd, getTable, randomWait
+from helpers import login_required, usd, getTable, randomWait, apology
 
 # Configure application
 app = Flask(__name__)
@@ -161,13 +161,11 @@ def login():
     if request.method == "POST":
         # Ensure username was submitted
         if not request.form.get("username"):
-            flash("Invalid Username", 403)
-            return redirect("/login")
+            return apology('Invalid Username/Password', 403)
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            flash("Invalid Password", 403)
-            return redirect("/login")
+            return apology('Invalid Username/Password', 403)
 
         # Query database for username
         rows = db.execute(
@@ -178,14 +176,13 @@ def login():
         if len(rows) != 1 or not check_password_hash(
             rows[0]["hash"], request.form.get("password")
         ):
-            flash("Invalid Username and/or Password", 403)
-            return redirect("/login")
+            return apology('Invalid Username/Password', 403)
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
 
         # Redirect user to home page
-        return redirect("/profile")
+        return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:

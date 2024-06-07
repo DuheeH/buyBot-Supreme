@@ -1,51 +1,70 @@
 /* Size for brand */
-nav .navbar-brand
-{
+nav .navbar-brand {
     font-size: xx-large;
 }
-
 /* Colors for brand */
-nav .navbar-brand .blue
-{
+nav .navbar-brand .blue {
     color: #537fbe;
 }
-nav .navbar-brand .red
-{
+nav .navbar-brand .red {
     color: #ea433b;
 }
-nav .navbar-brand .yellow
-{
+nav .navbar-brand .yellow {
     color: #f5b82e;
 }
-nav .navbar-brand .green
-{
+nav .navbar-brand .green {
     color: #2e944b;
 }
-
 #formfield {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
 .input-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 5px; /* Reduce the bottom margin */
+    margin-bottom: 5px;
+   /* Reduce the bottom margin */
 }
-
 .input-container input {
-    margin-right: 5px; /* Adjust the right margin */
+    margin-right: 5px;
+   /* Adjust the right margin */
 }
-
 .input-container input:last-child {
-    margin-right: 0px; /* Remove the right margin for the last input field */
+    margin-right: 0px;
+   /* Remove the right margin for the last input field */
 }
-
 .label {
     display: inline-block;
-    width: 100px; /* Adjust the width as needed */
+    width: 100px;
+   /* Adjust the width as needed */
     text-align: right;
-    margin-right: 10px; /* Add some spacing between the label and input */
+    margin-right: 10px;
+   /* Add some spacing between the label and input */
     margin-top: 5px;
+}
+body {
+    background-image: url('https://manybackgrounds.com/images/hd4/supreme-black-louis-vuitton-u9yswbecvydh3awy.jpg');
+    color: white;
+    font-weight: bold;
+    -webkit-text-stroke-width: .25px;
+    -webkit-text-stroke-color: red;
+}
+h1 {
+    color: white;
+    font-weight: bold;
+    -webkit-text-stroke-width: .25px;
+    -webkit-text-stroke-color: red;
+}
+h2 {
+    color: white;
+    font-weight: bold;
+    -webkit-text-stroke-width: .25px;
+    -webkit-text-stroke-color: red;
+}
+h3 {
+    color: white;
+    font-weight: bold;
+    -webkit-text-stroke-width: .25px;
+    -webkit-text-stroke-color: red;
 }
