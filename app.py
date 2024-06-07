@@ -81,8 +81,6 @@ def buy():
         for index, url in enumerate(urls):
             wd.get(url)
             # Add items to cart
-            # addCart = WebDriverWait(wd, 3).until(EC.presence_of_element_located((By.XPATH, xpath_dict["addCart"])))
-            # addCart.click()
             wd.find_element(By.XPATH, xpath_dict['addCart']).click()
             # Add price to prices list
             price = (wd.find_element(By.XPATH, xpath_dict['price']).text)
@@ -90,8 +88,6 @@ def buy():
         time.sleep(1.5)
         # Go to checkout
         wd.find_element(By.XPATH, xpath_dict['checkout']).click()
-        # cart_button = WebDriverWait(wd, 3).until(EC.presence_of_element_located((By.XPATH, xpath_dict["checkout"])))
-        # cart_button.click()
         randomWait()
         # Fill in checkout info
         for column in profile_columns:
@@ -106,10 +102,9 @@ def buy():
             element.click()
             element.send_keys(Keys.BACKSPACE * 5 + value)
         # Process Payment
-        #wd.find_element(By.XPATH, xpath_dict['processPayment']).click()
+        wd.find_element(By.XPATH, xpath_dict['processPayment']).click()
         wd.quit
         for index, url in enumerate(urls):
-            # quantity = float(quantities[index])
             db.execute("""
                 INSERT INTO transactions
                 (url, price, datetime, user_id)
