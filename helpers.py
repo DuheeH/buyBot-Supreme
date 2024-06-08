@@ -22,10 +22,6 @@ def login_required(f):
 
     return decorated_function
 
-def usd(value):
-    """Format value as USD."""
-    return f"${value:,.2f}"
-
 def getTable(table):
     """Retrieves up-to-date profile info"""
     user_id = session["user_id"]
@@ -43,27 +39,3 @@ def getTable(table):
 def randomWait():
     randon_wait = random.randrange(1,5)
     time.sleep(randon_wait)
-
-def apology(message, code=400):
-    """Render message as an apology to user."""
-
-    def escape(s):
-        """
-        Escape special characters.
-
-        https://github.com/jacebrowning/memegen#special-characters
-        """
-        for old, new in [
-            ("-", "--"),
-            (" ", "-"),
-            ("_", "__"),
-            ("?", "~q"),
-            ("%", "~p"),
-            ("#", "~h"),
-            ("/", "~s"),
-            ('"', "''"),
-        ]:
-            s = s.replace(old, new)
-        return s
-
-    return render_template("apology.html", top=code, bottom=escape(message)), code
