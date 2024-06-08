@@ -6,6 +6,15 @@
 
 buyBot-Supreme is a web application that allows users to automate the add to cart and checkout of online Supreme merchandise by grabbing the URL of the merchandise.
 
+#### buyBot-Supreme Key Languages/Libraries: 
+
+- **Python**: Flask, Selenium
+- **sqlite3**
+- **Jinja2**
+- **JavaScript**
+- **HTML**
+- **CSS**
+
 ## Design Choices:
 
 ### Backend: 
@@ -30,16 +39,7 @@ buyBot-Supreme is a web application that allows users to automate the add to car
 
 - **GitHub**: Was the obvious choice for version control which was used for this project.
 
-### buyBot-Supreme Key Languages/Libraries: 
-
-- **Python**: Flask, Selenium
-- **sqlite3**
-- **Jinja2**
-- **JavaScript**
-- **HTML**
-- **CSS**
-
-### Folders/Files:
+## Folders/Files:
 
 - **app.py**: The Python file that contains the routing and functions required to make the application functional.
   - **Routes**: 
