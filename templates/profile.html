@@ -8,18 +8,27 @@
     <form action="/profile" method="post">
       <div class="mb-3">
         <label><h3>Profile</h3></label><br>
-        <input type="text" id="firstName" name="firstName" placeholder="First Name" required value="{% if profile_recent['firstName'] != None %}{{ profile_recent['firstName'] }}{% endif %}" autocomplete="off">
-        <input type="text" id="lastName" name="lastName" placeholder="Last Name" required value="{% if profile_recent['lastName'] != None %}{{ profile_recent['lastName'] }}{% endif %}" autocomplete="off"><br>
-        <input type="text" id="email" name="email" placeholder="Email" required value="{% if profile_recent['email'] != None %}{{ profile_recent['email'] }}{% endif %}" autocomplete="off">
-        <input type="text" id="phone" name="phone" placeholder="Phone: 1 1234567890" required value="{% if profile_recent['phone'] != None %}{{ profile_recent['phone'] }}{% endif %}" autocomplete="off"><br><br>
+        <input type="text" id="firstName" name="firstName" placeholder="First Name" required value="{% if profile_recent['firstName'] %}{{ profile_recent['firstName'] }}{% endif %}" autocomplete="off">
+        <input type="text" id="lastName" name="lastName" placeholder="Last Name" required value="{% if profile_recent['lastName'] %}{{ profile_recent['lastName'] }}{% endif %}" autocomplete="off"><br>
+        <input type="text" id="email" name="email" placeholder="Email" required value="{% if profile_recent['email'] %}{{ profile_recent['email'] }}{% endif %}" autocomplete="off">
+        <input type="text" id="phone" name="phone" placeholder="Phone: 1 234-567-8902" required value="{% if profile_recent['phone'] %}{{ profile_recent['phone'] }}{% endif %}" autocomplete="off"><br><br>
+      </div>
+      <div class="mb-3">
+        <label><h3>Profile</h3></label><br>
+        <input type="text" id="address" name="address" placeholder="Address" required value="{% if profile_recent['address'] %}{{ profile_recent['address'] }}{% endif %}" autocomplete="off">
+        <input type="text" id="address2" name="address2" placeholder="Address2 (Optional)" value="{% if profile_recent['address2'] %}{{ profile_recent['address2'] }}{% endif %}" autocomplete="off"><br>
+        <input type="text" id="city" name="city" placeholder="City" required value="{% if profile_recent['city'] %}{{ profile_recent['city'] }}{% endif %}" autocomplete="off">
+        <input type="text" id="state" name="state" placeholder="State" required value="{% if profile_recent['state'] %}{{ profile_recent['state'] }}{% endif %}" autocomplete="off"><br>
+        <input type="text" id="zip" name="zip" placeholder="Zip" required value="{% if profile_recent['zip'] %}{{ profile_recent['zip'] }}{% endif %}" autocomplete="off">
+        <br><br>
       </div>
       <div class="mb-3">
           <label><h3>Credit Card Information</h3></label><br>
-          <input type="text" id="ccName" name="ccName" placeholder="Name" required value="{% if profile_recent['ccName'] != None %}{{ profile_recent['ccName'] }}{% endif %}" autocomplete="off">
-          <input type="text" id="ccNumber" name="ccNumber" placeholder="Number" required value="{% if profile_recent['ccNumber'] != None %}{{ profile_recent['ccNumber'] }}{% endif %}" autocomplete="off"><br>
-          <input type="text" id="ccExpirationM" name="ccExpirationM" placeholder="Expiration Month: MM" required value="{% if profile_recent['ccExpiration'] != None %}{{ profile_recent['ccExpiration'][0:2] }}{% endif %}" autocomplete="off">
-          <input type="text" id="ccExpirationY" name="ccExpirationY" placeholder="Expiration Year: YY" required value="{% if profile_recent['ccExpiration'] != None %}{{ profile_recent['ccExpiration'][-2:] }}{% endif %}" autocomplete="off">
-          <input type="text" id="ccSecurity" name="ccSecurity" placeholder="Security Code" required value="{% if profile_recent['ccSecurity'] != None %}{{ profile_recent['ccSecurity'] }}{% endif %}" autocomplete="off">
+          <input type="text" id="ccName" name="ccName" placeholder="Name" required value="{% if profile_recent['ccName'] %}{{ profile_recent['ccName'] }}{% endif %}" autocomplete="off">
+          <input type="text" id="ccNumber" name="ccNumber" placeholder="Number" required value="{% if profile_recent['ccNumber'] %}{{ profile_recent['ccNumber'] }}{% endif %}" autocomplete="off"><br>
+          <input type="text" id="ccExpirationM" name="ccExpirationM" placeholder="Expiration Month: MM" required value="{% if profile_recent['ccExpiration'] %}{{ profile_recent['ccExpiration'][0:2] }}{% endif %}" autocomplete="off">
+          <input type="text" id="ccExpirationY" name="ccExpirationY" placeholder="Expiration Year: YY" required value="{% if profile_recent['ccExpiration'] %}{{ profile_recent['ccExpiration'][-2:] }}{% endif %}" autocomplete="off">
+          <input type="text" id="ccSecurity" name="ccSecurity" placeholder="Security Code" required value="{% if profile_recent['ccSecurity'] %}{{ profile_recent['ccSecurity'] }}{% endif %}" autocomplete="off">
           <br><br>
       </div>
       <button class="btn btn-primary" type="submit">Save</button>

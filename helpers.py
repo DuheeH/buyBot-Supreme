@@ -34,7 +34,10 @@ def getTable(table):
     except:
         table_recent = db.execute("SELECT * FROM ? WHERE user_id=?", table, user_id)
     if len(table_recent) <= 1:
-        return table_recent[0]
+        try:
+            return table_recent[0]
+        except:
+            return []
     return table_recent
 
 def randomWait():

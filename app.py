@@ -108,9 +108,12 @@ def buy():
             element.click()
             element.send_keys(Keys.BACKSPACE * 5 + value)
 
+        # Keep uncommented to double check the autofilled information
+        time.sleep(10)
+
         # Process Payment: CONSIDER THIS THE SAFETY SWITCH OF THE WEBAPP
         # If the line below is not commented out, the payment will be processed
-        wd.find_element(By.XPATH, xpath_dict['processPayment']).click()
+        #wd.find_element(By.XPATH, xpath_dict['processPayment']).click()
         wd.quit
 
         # Enters the data into the transactions table
@@ -141,20 +144,11 @@ def buy():
 @login_required
 def index():
     # Will either display the table or redirect to buy, as there are no transactions
-    try: 
-        transactions = getTable('transactions')
-        try:
-            if transactions['price'] is None:
-                flash("| No Transactions | ")
-                return redirect("/buy")
-        except:
-            return render_template(
-                "index.html",
-                transactions=transactions
-                )
-    except:
-        flash("| No Transactions |")
-        return redirect('/buy')
+    transactions = getTable('transactions')
+    if len(transactions)==0:
+        flash("| No Transactions | ")
+        return redirect("/buy")
+    return render_template("index.html",transactions=transactions)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -264,7 +258,7 @@ def profile():
         del profile["ccExpirationY"]
 
         # Tests to see whether there is a profile already for the user logged in
-        test = getTable('profile')
+        test = getTable('profiles')
         if not test:
             db.execute("""
                 INSERT INTO profiles (user_id)
@@ -284,7 +278,7 @@ def profile():
         flash("Profile Updated")
         return render_template("profile.html", profile_recent=profile_recent)
     
-    # Creates a table if it does not exist
+    # Creates a table if it does not exist when first visting the page
     db.execute("""
         CREATE TABLE IF NOT EXISTS profiles (
         id INTEGER PRIMARY KEY,
