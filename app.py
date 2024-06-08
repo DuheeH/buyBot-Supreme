@@ -120,16 +120,11 @@ def buy():
     
     # If not submitting form, tests to see whether there is a profile and redirects/renders accordingly
             # Creates table for transactions if not already existing
-    try:
-        rows=db.execute("""
-            SELECT * FROM profiles
-            WHERE id = ?
-            """, user_id)
-        rows = rows[0]
+    profile = getTable('profiles')
+    if len(profile)>1:
         return render_template("buy.html")
-    except:
-        flash("| Profile Required Prior to Purchase |")
-        return redirect("/profile")
+    flash("| Profile Required Prior to Purchase |")
+    return redirect("/profile")
 
 @app.route("/")
 @login_required
@@ -271,28 +266,6 @@ def profile():
         profile_recent = getTable('profiles')
         flash("Profile Updated")
         return render_template("profile.html", profile_recent=profile_recent)
-    
-    # Creates a table if it does not exist when first visting the page
-    db.execute("""
-        CREATE TABLE IF NOT EXISTS profiles (
-        id INTEGER PRIMARY KEY,
-        user_id INTEGER,
-        firstName TEXT,
-        lastName TEXT,
-        email TEXT,
-        address TEXT,
-        address2 TEXT,
-        city TEXT,
-        state TEXT,
-        zip TEXT,
-        phone TEXT,
-        ccName TEXT,
-        ccNumber TEXT,
-        ccExpiration TEXT,
-        ccSecurity TEXT,
-        sameAddress TEXT DEFAULT 'on',
-        FOREIGN KEY (user_id) REFERENCES users(id)
-        )""")
     # Renders the profile info with the info in the table if any exists
     profile_recent = getTable('profiles')
     return render_template("profile.html", profile_recent=profile_recent)
