@@ -10,7 +10,7 @@ buyBot-Supreme is a web application that allows users to automate the add to car
 
 - **Python**: Flask, Selenium
 - **sqlite3**
-- **Jinja2**
+- **Jinja**
 - **JavaScript**
 - **HTML**
 - **CSS**
