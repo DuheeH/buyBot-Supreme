@@ -41,16 +41,6 @@ def buy():
         user_id = session["user_id"]
         urls = request.form.getlist('url')
         date_time = datetime.now()
-        # Creates table for transactions if not already existing
-        db.execute("""
-            CREATE TABLE IF NOT EXISTS transactions
-            (id INTEGER PRIMARY KEY,
-            url TEXT,
-            price FLOAT,
-            datetime DATETIME,
-            user_id INTEGER,
-            FOREIGN KEY (user_id) REFERENCES users(id))
-        """)
         
         wd = webdriver.Chrome()
         profile = getTable('profiles')
@@ -109,7 +99,7 @@ def buy():
             element.send_keys(Keys.BACKSPACE * 5 + value)
 
         # Keep uncommented to double check the autofilled information
-        time.sleep(10)
+        time.sleep(5)
 
         # Process Payment: CONSIDER THIS THE SAFETY SWITCH OF THE WEBAPP
         # If the line below is not commented out, the payment will be processed
@@ -129,6 +119,7 @@ def buy():
         return redirect("/")
     
     # If not submitting form, tests to see whether there is a profile and redirects/renders accordingly
+            # Creates table for transactions if not already existing
     try:
         rows=db.execute("""
             SELECT * FROM profiles
@@ -144,7 +135,10 @@ def buy():
 @login_required
 def index():
     # Will either display the table or redirect to buy, as there are no transactions
-    transactions = getTable('transactions')
+    try:
+        transactions = getTable('transactions')
+    except:
+        transactions = []
     if len(transactions)==0:
         flash("| No Transactions | ")
         return redirect("/buy")
