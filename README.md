@@ -10,6 +10,7 @@ buyBot-Supreme is a web application that allows users to automate the add to car
 
 - **Python**: Flask, Selenium
 - **sqlite3**
+- **bash**
 - **Jinja**
 - **JavaScript**
 - **HTML**
@@ -37,7 +38,10 @@ buyBot-Supreme is a web application that allows users to automate the add to car
 
 ### Version Control:
 
-- **GitHub**: Was the obvious choice for version control which was used for this project.
+- **GitHub**: GitHub was the obvious choice for version control which was used for this project. While working on a local repository, I found myself repeatedly removing unwanted files and folders from my GitHub repository which led to learning about **rebase** and **.gitignore**.
+  
+- **venv**: While looking for way to have a clean and isolated workspace for my project and avoid dependency mishaps down the line, I found out about virtual environements the venv command in python. I worked within a virtual environment during the project and generated a requirements.txt file when complete.
+
 
 ## Folders/Files:
 
